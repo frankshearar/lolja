@@ -6,6 +6,12 @@
   (is (= 90 (heading (rt (new-turtle) 90))))
   (is (= 270 (heading (rt (new-turtle) -90)))))
 
+(deftest test-lt
+  (is (= 90 (heading (lt (new-turtle) 270))))
+  (is (= 350 (heading (lt (lt (new-turtle) 350) 20))))
+  (is (= 90 (heading (lt (new-turtle) -90))))
+  (is (= 0 (heading (lt (new-turtle) 720)))))
+
 (deftest test-new-turtle
   (let [t (new-turtle)]
     (is (= '(0 0) (:location t)))

@@ -28,9 +28,13 @@
   "Move the turtle forward n units."
   turtle)
 
+(defn lt [turtle n]
+  "Rotate the turtle n degress anticlockwise"
+  (change-state turtle :heading (mod (- (heading turtle) n) 360)))
+
 (defn rt [turtle n]
   "Rotate the turtle n degrees clockwise"
-  (change-state turtle :heading (mod (+ (:heading turtle) n) 360)))
+  (lt turtle (- n)))
 
 (defn pen-erase [turtle]
   "Erase any lines over which the turtle moves."
