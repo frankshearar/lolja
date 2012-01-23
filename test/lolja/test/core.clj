@@ -2,9 +2,41 @@
   (:use [lolja.core])
   (:use [clojure.test]))
 
+;;; Parsing functions
+
+(deftest test-command-turtle
+  (let [t (new-turtle)]
+    (is (= 90 (heading (command-turtle [:rt 90] t))))
+    (is (= 270 (heading (command-turtle [:lt 90] t))))
+    (is (= [10 0] (location (command-turtle [:fd 10] t))))
+    (is (= [-10 0] (location (command-turtle [:bk 10] t))))))
+
+(deftest test-read-command
+  (is (= [:fd 100] (read-command "fd 100")))
+  (is (= [:rt 100] (read-command "rt 100")))
+  (is (= [:lt -10] (read-command "lt -10"))))
+
+;;; Turtle functions
+
+(deftest test-bk
+  (is (= [-10 0] (location (bk (new-turtle) 10))))
+  (is (= [10 0] (location (bk (new-turtle) (- 10)))))
+  (let [t (new-turtle)]
+    (is (= (heading t) (heading (fd t 10))))))
+
+(deftest test-fd
+  (is (= [10 0] (location (fd (new-turtle) 10))))
+  (is (= [-10 0] (location (fd (new-turtle) (- 10)))))
+  (let [t (new-turtle)]
+    (is (= (heading t) (heading (fd t 10))))))
+
 (deftest test-heading
   (is (= 90 (heading (rt (new-turtle) 90))))
   (is (= 270 (heading (rt (new-turtle) -90)))))
+
+(deftest test-location
+  (is (= [10 0] (location (fd (new-turtle) 10))))
+  (is (= [0 10] (location (fd (rt (new-turtle) 90) 10)))))
 
 (deftest test-lt
   (is (= 90 (heading (lt (new-turtle) 270))))
@@ -14,7 +46,7 @@
 
 (deftest test-new-turtle
   (let [t (new-turtle)]
-    (is (= '(0 0) (:location t)))
+    (is (= '(0 0) (location t)))
     (is (= 0 (heading t)))
     (is (= :pen-down (pen-state t)))))
 
@@ -37,11 +69,6 @@
   (is (= :pen-up (pen-state (pen-up (new-turtle)))))
   (is (= :pen-down (pen-state (pen-down (new-turtle)))))
   (is (= :pen-erase (pen-state (pen-erase (new-turtle))))))
-
-(deftest test-read-command
-  (is (= [:fd 100] (read-command "fd 100")))
-  (is (= [:rt 100] (read-command "rt 100")))
-  (is (= [:lt -10] (read-command "lt -10"))))
 
 (deftest test-rt
   (is (= 90 (heading (rt (new-turtle) 90))))
