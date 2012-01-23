@@ -2,6 +2,8 @@
     ;  :author "Frank Shearar"}
   lolja.core)
 
+(defn- change-state [turtle key value]
+  (assoc turtle key value :history turtle))
 
 ; Questions: do we want switchable coordinates? (cartesion or polar!)
 ;(defstruct turtle
@@ -16,19 +18,27 @@
      (map #(Integer/valueOf %) (rest toks)))))
 
 (defn new-turtle []
-  {:location '(0 0) :heading 0 :pen-state :pen-down})
+  {:location '(0 0) :heading 0 :pen-state :pen-down :history nil})
+
+(defn heading [turtle]
+  "In what direction is the turtle facing? (Measured in degrees, 0 means North."
+  (:heading turtle))
 
 (defn fd [turtle n]
   "Move the turtle forward n units."
   turtle)
 
+(defn rt [turtle n]
+  "Rotate the turtle n degrees clockwise"
+  (change-state turtle :heading (mod (+ (:heading turtle) n) 360)))
+
 (defn pen-erase [turtle]
   "Erase any lines over which the turtle moves."
-  (assoc turtle :pen-state :pen-erase))
+  (change-state turtle :pen-state :pen-erase))
 
 (defn pen-down [turtle]
   "Lower the turtle's pen, so that it may draw as it moves."
-  (assoc turtle :pen-state :pen-down))
+  (change-state turtle :pen-state :pen-down))
 
 (defn pen-state [turtle]
   "In what state is the turtle's pen? Should be one of:
@@ -37,4 +47,4 @@
 
 (defn pen-up [turtle]
   "Lift the turtle's pen up, making it not draw lines during movement."
-  (assoc turtle :pen-state :pen-up))
+  (change-state turtle :pen-state :pen-up))
