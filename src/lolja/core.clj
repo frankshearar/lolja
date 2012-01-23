@@ -15,14 +15,19 @@
   {:location '(0 0) :heading 0 :pen-state :pen-down :history nil})
 
 (defn heading [turtle]
-  "In what direction is the turtle facing? Measured in degrees, 0 means 'along the x-axis, towards positive infinity'."
+  "In what direction is the turtle facing? Measured in degrees,
+   0 means 'along the x-axis, towards positive infinity', and increasing anti-clockwise."
   (:heading turtle))
 
 (defn fd [turtle n]
   "Move the turtle forward n units."
-  (cond
-   (= 0 (heading turtle)) (change-state turtle :location (map #(+ %1 %2) (:location turtle) [n 0]))
-   (= 90 (heading turtle)) (change-state turtle :location (map #(+ %1 %2) (:location turtle) [0 n]))))
+  (let [heading (heading turtle)
+        xform (cond
+               (= 0 (mod heading 360)) [n 0]
+               (= 0 (mod heading 180)) [(- n) 0]
+               (= 0 (mod heading 270)) [0 (- n)]
+               (= 0 (mod heading 90)) [0 n])]
+    (change-state turtle :location (map #(+ %1 %2) (:location turtle) xform))))
 
 (defn location [turtle]
   (:location turtle))
@@ -32,8 +37,8 @@
   (fd turtle (- n)))
 
 (defn lt [turtle n]
-  "Rotate the turtle n degress anticlockwise"
-  (change-state turtle :heading (mod (- (heading turtle) n) 360)))
+  "Rotate the turtle n degrees anticlockwise"
+  (change-state turtle :heading (mod (+ (heading turtle) n) 360)))
 
 (defn rt [turtle n]
   "Rotate the turtle n degrees clockwise"

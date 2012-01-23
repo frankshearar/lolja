@@ -6,8 +6,8 @@
 
 (deftest test-command-turtle
   (let [t (new-turtle)]
-    (is (= 90 (heading (command-turtle [:rt 90] t))))
-    (is (= 270 (heading (command-turtle [:lt 90] t))))
+    (is (= 270 (heading (command-turtle [:rt 90] t))))
+    (is (= 90 (heading (command-turtle [:lt 90] t))))
     (is (= [10 0] (location (command-turtle [:fd 10] t))))
     (is (= [-10 0] (location (command-turtle [:bk 10] t))))))
 
@@ -31,17 +31,17 @@
     (is (= (heading t) (heading (fd t 10))))))
 
 (deftest test-heading
-  (is (= 90 (heading (rt (new-turtle) 90))))
-  (is (= 270 (heading (rt (new-turtle) -90)))))
+  (is (= 270 (heading (rt (new-turtle) 90))))
+  (is (= 90 (heading (rt (new-turtle) -90)))))
 
 (deftest test-location
   (is (= [10 0] (location (fd (new-turtle) 10))))
-  (is (= [0 10] (location (fd (rt (new-turtle) 90) 10)))))
+  (is (= [0 10] (location (fd (lt (new-turtle) 90) 10)))))
 
 (deftest test-lt
-  (is (= 90 (heading (lt (new-turtle) 270))))
-  (is (= 350 (heading (lt (lt (new-turtle) 350) 20))))
-  (is (= 90 (heading (lt (new-turtle) -90))))
+  (is (= 270 (heading (lt (new-turtle) 270))))
+  (is (= 10 (heading (lt (lt (new-turtle) 350) 20))))
+  (is (= 270 (heading (lt (new-turtle) -90))))
   (is (= 0 (heading (lt (new-turtle) 720)))))
 
 (deftest test-new-turtle
@@ -70,8 +70,14 @@
   (is (= :pen-down (pen-state (pen-down (new-turtle)))))
   (is (= :pen-erase (pen-state (pen-erase (new-turtle))))))
 
+(deftest test-rectilinear-movement
+  (is (= [10 0] (location (fd (new-turtle) 10))))
+  (is (= [0 10] (location (fd (lt (new-turtle) 90) 10))))
+  (is (= [-10 0] (location (fd (rt (new-turtle) 180) 10))))
+  (is (= [0 -10] (location (bk (lt (new-turtle) 90) 10)))))
+
 (deftest test-rt
-  (is (= 90 (heading (rt (new-turtle) 90))))
-  (is (= 10 (heading (rt (rt (new-turtle) 350) 20))))
-  (is (= 270 (heading (rt (new-turtle) -90))))
+  (is (= 270 (heading (rt (new-turtle) 90))))
+  (is (= 350 (heading (rt (rt (new-turtle) 350) 20))))
+  (is (= 90 (heading (rt (new-turtle) -90))))
   (is (= 0 (heading (rt (new-turtle) 720)))))
